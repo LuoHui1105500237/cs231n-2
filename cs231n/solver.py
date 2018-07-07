@@ -1,10 +1,11 @@
-from __future__ import print_function, division
+#from __future__ import print_function, division
 #from future import standard_library
 #standard_library.install_aliases()
 from builtins import range
 from builtins import object
 import os
 import pickle as pickle
+import sys
 
 import numpy as np
 
@@ -174,6 +175,7 @@ class Solver(object):
         """
         # Make a minibatch of training data
         num_train = self.X_train.shape[0]
+        
         batch_mask = np.random.choice(num_train, self.batch_size)
         X_batch = self.X_train[batch_mask]
         y_batch = self.y_train[batch_mask]
@@ -187,8 +189,15 @@ class Solver(object):
             dw = grads[p]
             config = self.optim_configs[p]
             next_w, next_config = self.update_rule(w, dw, config)
+            #print(config,w.shape)
+            #sys.exit()
+            
             self.model.params[p] = next_w
             self.optim_configs[p] = next_config
+        
+        
+        
+            
 
 
     def _save_checkpoint(self):
@@ -258,10 +267,17 @@ class Solver(object):
         """
         Run optimization to train the model.
         """
+        
+        
         num_train = self.X_train.shape[0]
+        print(num_train)
+        
+        
         iterations_per_epoch = max(num_train // self.batch_size, 1)
+        print(iterations_per_epoch)
+        
         num_iterations = self.num_epochs * iterations_per_epoch
-
+        
         for t in range(num_iterations):
             self._step()
 
@@ -269,6 +285,7 @@ class Solver(object):
             if self.verbose and t % self.print_every == 0:
                 print('(Iteration %d / %d) loss: %f' % (
                        t + 1, num_iterations, self.loss_history[-1]))
+                
 
             # At the end of every epoch, increment the epoch counter and decay
             # the learning rate.
@@ -281,6 +298,8 @@ class Solver(object):
             # Check train and val accuracy on the first iteration, the last
             # iteration, and at the end of each epoch.
             first_it = (t == 0)
+            #print(first_it)
+            #sys.exit()
             last_it = (t == num_iterations - 1)
             if first_it or last_it or epoch_end:
                 train_acc = self.check_accuracy(self.X_train, self.y_train,
@@ -304,3 +323,4 @@ class Solver(object):
 
         # At the end of training swap the best params into the model
         self.model.params = self.best_params
+       

@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 
 """
 This file implements various first-order update rules that are commonly used
@@ -41,6 +42,8 @@ def sgd(w, dw, config=None):
     config.setdefault('learning_rate', 1e-2)
 
     w -= config['learning_rate'] * dw
+    #print(dw.shape)
+    #sys.exit()
     return w, config
 
 

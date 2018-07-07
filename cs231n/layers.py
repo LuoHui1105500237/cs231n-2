@@ -25,12 +25,15 @@ def affine_forward(x, w, b):
     # TODO: Implement the affine forward pass. Store the result in out. You   #
     # will need to reshape the input into rows.                               #
     ###########################################################################
-    num_train = x.shape[0]
-    D=w.shape[0]
+    #num_train = x.shape[0]
+    #D=w.shape[0]
     
-    x1=x.reshape(num_train,D)
+    #x1=x.reshape(num_train,D)
     
-    out=x1.dot(w)+b
+    #out=x1.dot(w)+b
+    N, D = x.shape[0], w.shape[0]
+    out = np.dot(x.reshape(N, D), w) + b
+    print('x:',x.shape)
     
     ###########################################################################
     #                             END OF YOUR CODE                            #
@@ -60,18 +63,18 @@ def affine_backward(dout, cache):
     ###########################################################################
     # TODO: Implement the affine backward pass.                               #
     ###########################################################################
-    num=x.shape
-    dx = np.dot(dout, w.T)
-    dx=np.reshape(dx,x.shape)
     
- 
-    #dx=np.reshape(dx,x.shape)   
-    num_train=x.shape[0]
-    D=w.shape[0]
-    X=None
-    X=x.reshape(num_train,D)
-    dw=np.dot(X.T,dout)
-    db=np.sum(dout,axis=0,keepdims=True)
+    #dx = np.dot(dout, w.T).reshape(x.shape)  
+    #num_train=x.shape[0]
+    #D=w.shape[0]
+
+    
+    #dw=np.dot(x.reshape(num_train,D).T,dout)
+    #db=np.sum(dout,axis=0)
+    N, D = x.shape[0], w.shape[0]
+    dx = np.dot(dout, w.T).reshape(x.shape)
+    dw = np.dot(x.reshape(N, D).T, dout)
+    db = np.sum(dout, axis = 0)
     
     ###########################################################################
     #                             END OF YOUR CODE                            #
@@ -117,8 +120,8 @@ def relu_backward(dout, cache):
     ###########################################################################
     # TODO: Implement the ReLU backward pass.                                 #
     ###########################################################################
-    dx=dout
-    dx[x<0]=0
+    dx=dout*(x > 0)
+    
     ###########################################################################
     #                             END OF YOUR CODE                            #
     ###########################################################################
